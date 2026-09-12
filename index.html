@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d14">
+<title>Como Ninar a Rainha da Lua — Biblioteca</title>
+<style>
+
+:root{
+  --bg:#0b0d14;--bg2:#111521;--panel:rgba(21,25,37,.78);--panel2:#171c29;
+  --text:#f7f8ff;--muted:#a7afc2;--line:rgba(255,255,255,.10);
+  --accent:#c6b6ff;--accent2:#8ea1ff;--pink:#f2addf;--shadow:0 24px 80px rgba(0,0,0,.38);
+}
+:root[data-theme="light"]{
+  --bg:#f3f4fa;--bg2:#e9ecf6;--panel:rgba(255,255,255,.86);--panel2:#fff;
+  --text:#151824;--muted:#697083;--line:rgba(22,30,55,.10);
+  --accent:#6555c9;--accent2:#5069d8;--pink:#b44d93;--shadow:0 24px 65px rgba(40,50,90,.16);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% -8%,rgba(138,115,255,.22),transparent 34%),
+    radial-gradient(circle at 92% 4%,rgba(242,173,223,.15),transparent 28%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+}
+a{color:inherit}
+button,a{font:inherit}
+.glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(20px);box-shadow:var(--shadow)}
+.topbar{
+  position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 74%,transparent);backdrop-filter:blur(18px)
+}
+.topbar-inner{max-width:1120px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:10px}
+.wordmark{font-weight:850;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1}
+.icon-btn{
+  width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:var(--panel);
+  color:var(--text);display:grid;place-items:center;text-decoration:none;cursor:pointer;transition:.18s ease
+}
+.icon-btn:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 17px;
+  border-radius:14px;border:1px solid var(--line);text-decoration:none;font-weight:800;cursor:pointer;transition:.18s ease
+}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border-color:transparent;box-shadow:0 12px 32px rgba(93,86,205,.28)}
+.btn.ghost{background:var(--panel);color:var(--text)}
+.muted{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800}
+.footer{max-width:1120px;margin:20px auto 0;padding:24px 18px 34px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:700px){.topbar-inner{padding:10px 12px}.wordmark{font-size:14px}.hide-mobile{display:none}}
+
+.hero{max-width:1120px;margin:0 auto;padding:54px 18px 30px;display:grid;grid-template-columns:minmax(270px,430px) 1fr;gap:48px;align-items:center}
+.cover-link{display:block;position:relative;border-radius:28px;overflow:hidden;aspect-ratio:1/1;text-decoration:none;background:linear-gradient(135deg,#6b56d9,#ed9ed3);box-shadow:0 35px 100px rgba(0,0,0,.42);transition:.25s ease}
+.cover-link:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 42px 115px rgba(0,0,0,.48)}
+.cover-link img{width:100%;height:100%;object-fit:cover;display:block;transition:.35s ease}
+.cover-link:hover img{transform:scale(1.035)}
+.cover-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(4,5,10,.72));pointer-events:none}
+.cover-cta{position:absolute;left:18px;right:18px;bottom:17px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.cover-cta strong{font-size:14px;letter-spacing:.02em}
+.circle{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);backdrop-filter:blur(12px);font-size:21px}
+.kicker{color:var(--accent);font-weight:850;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+h1{font-size:clamp(38px,6vw,72px);line-height:.98;letter-spacing:-.055em;margin:14px 0 14px;max-width:680px}
+.jp{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:19px;color:var(--muted);margin-bottom:22px}
+.description{font-size:17px;line-height:1.7;color:var(--muted);max-width:640px;margin:0 0 25px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.stats{max-width:1120px;margin:10px auto 0;padding:0 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{padding:18px;border-radius:18px}
+.stat strong{display:block;font-size:22px;margin-bottom:3px}
+.stat span{color:var(--muted);font-size:13px}
+.moon{position:fixed;width:220px;height:220px;border-radius:50%;right:-80px;bottom:-75px;background:radial-gradient(circle at 34% 32%,#fff 0 3%,#e8defe 7%,#9f91e5 52%,#5d56a4 100%);opacity:.16;filter:blur(.2px);pointer-events:none}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:28px;gap:28px}.cover-link{max-width:520px;width:100%;justify-self:center}h1{font-size:clamp(38px,12vw,64px)}.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <div class="wordmark">Como Ninar a Rainha da Lua</div><div class="spacer"></div>
+  <button class="icon-btn" id="themeBtn" aria-label="Alternar tema">☾</button>
+</div></header>
+
+<main>
+<section class="hero">
+  <a class="cover-link" href="capitulos.html" aria-label="Abrir lista de capítulos">
+    <img src="capa.png" alt="Capa colorida de 月の女王の寝かしつけかた">
+    <div class="cover-shade"></div>
+    <div class="cover-cta"><strong>Toque para abrir</strong><span class="circle">›</span></div>
+  </a>
+  <div>
+    <div class="kicker">Leitor interativo de mangá</div>
+    <h1>Como Ninar a Rainha da Lua</h1>
+    <div class="jp">月の女王の寝かしつけかた</div>
+    <p class="description">Uma biblioteca pessoal com páginas em japonês e traduções interativas em português. Toque nos textos do mangá para revelar tradução, rōmaji e notas de contexto.</p>
+    <div class="actions">
+      <a class="btn primary" href="capitulos.html">Ver capítulos <span>→</span></a>
+      <a class="btn ghost" id="continueBtn" href="capitulo-5-1.html">Continuar · capítulo 5.1</a>
+    </div>
+  </div>
+</section>
+<section class="stats">
+  <div class="stat glass"><strong>8</strong><span>capítulos/partes na biblioteca</span></div>
+  <div class="stat glass"><strong>47</strong><span>páginas interativas já prontas</span></div>
+  <div class="stat glass"><strong>藤高つむり</strong><span>Fujitaka Tsumuri · autor</span></div>
+</section>
+</main>
+<div class="moon"></div>
+<footer class="footer">Biblioteca pessoal · Capa personalizada armazenada junto com o site.</footer>
+<script>
+const root=document.documentElement;
+root.dataset.theme=localStorage.getItem('tsukiTheme')||'dark';
+const tb=document.getElementById('themeBtn');
+function syncTheme(){tb.textContent=root.dataset.theme==='dark'?'☾':'☀';}
+tb.onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('tsukiTheme',root.dataset.theme);syncTheme();};
+syncTheme();
+const p=Number(localStorage.getItem('tsuki_ch51_lastPage')||1);
+const c=document.getElementById('continueBtn');
+if(p>1){c.href='capitulo-5-1.html#page-'+p;c.textContent='Continuar · cap. 5.1 · página '+p;}
+</script>
+</body></html>
