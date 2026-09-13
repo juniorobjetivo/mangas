@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f14">
+<title>Capítulo 2 — ATMおじさん</title>
+<style>
+:root {
+  --bg:#0d0f14; --panel:rgba(20,23,31,.90); --panel-solid:#151922;
+  --text:#f6f7fb; --muted:#aeb5c2; --line:rgba(255,255,255,.10);
+  --accent:#a9b6ff; --accent2:#d6dcff; --hot:rgba(185,196,255,.12);
+  --hotline:rgba(210,218,255,.62); --shadow:0 20px 60px rgba(0,0,0,.35);
+}
+:root[data-theme="light"] {
+  --bg:#f2f4f8; --panel:rgba(255,255,255,.94); --panel-solid:#fff;
+  --text:#171a22; --muted:#646b78; --line:rgba(10,20,40,.10);
+  --accent:#4b5ed7; --accent2:#3346bc; --hot:rgba(75,94,215,.10);
+  --hotline:rgba(75,94,215,.55); --shadow:0 20px 60px rgba(25,35,65,.15);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 20% -10%,rgba(120,135,220,.15),transparent 36%),
+    radial-gradient(circle at 90% 0%,rgba(180,120,220,.08),transparent 30%),var(--bg);
+}
+button{font:inherit}
+.topbar{
+  position:sticky; top:0; z-index:50; backdrop-filter:blur(18px);
+  background:color-mix(in srgb,var(--bg) 76%,transparent);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  max-width:1180px; margin:0 auto; padding:11px 14px;
+  display:flex; align-items:center; gap:10px;
+}
+.brand{min-width:0;flex:1}
+.back-link{min-height:42px;padding:0 12px;border-radius:13px;border:1px solid var(--line);background:var(--panel);color:var(--text);display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:750;white-space:nowrap;transition:.18s ease}.back-link:hover{transform:translateY(-1px);border-color:var(--hotline)}
+.eyebrow{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.brand-title{font-weight:780;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn,.pill-btn{
+  border:1px solid var(--line); background:var(--panel); color:var(--text);
+  cursor:pointer; transition:.18s ease;
+}
+.icon-btn{
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:18px;flex:0 0 auto;
+}
+.pill-btn{min-height:42px;border-radius:12px;padding:0 12px;font-weight:750;white-space:nowrap}
+.icon-btn:hover,.pill-btn:hover{transform:translateY(-1px);border-color:var(--hotline)}
+main{max-width:1180px;margin:0 auto;padding:18px 10px 118px}
+.info-card{
+  max-width:920px;margin:0 auto 18px;padding:15px 16px;border:1px solid var(--line);
+  background:var(--panel);backdrop-filter:blur(18px);border-radius:20px;box-shadow:var(--shadow);
+}
+.info-top{display:flex;align-items:flex-start;gap:12px}
+.info-copy{flex:1;min-width:0}
+.info-title{font-size:18px;font-weight:800;margin:0 0 4px}
+.info-sub{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.badge{
+  flex:0 0 auto;border:1px solid var(--line);background:color-mix(in srgb,var(--accent) 14%,transparent);
+  color:var(--accent2);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;
+}
+.tip{margin-top:11px;display:flex;gap:9px;align-items:center;color:var(--muted);font-size:13px}
+.tip-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 16%,transparent)}
+.reader{display:flex;flex-direction:column;gap:28px}
+.page-wrap{max-width:920px;margin:0 auto;width:100%;scroll-margin-top:78px}
+.page-meta{display:flex;align-items:center;justify-content:space-between;margin:0 4px 8px;color:var(--muted);font-size:12px}
+.page-chip{
+  padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  color:var(--text);font-weight:750;
+}
+.page-scroll{overflow:auto;padding:2px 0 10px;overscroll-behavior-x:contain;overscroll-behavior-y:auto}
+.page-shell{
+  position:relative;margin:0 auto;border-radius:18px;overflow:hidden;background:#fff;
+  box-shadow:0 26px 90px rgba(0,0,0,.35);transition:width .16s ease;
+}
+.page-shell img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.hotspot{
+  position:absolute;border:1.5px dashed transparent;border-radius:13px;background:transparent;
+  cursor:pointer;padding:0;outline:none;transition:.16s ease;
+}
+body.guide-on .hotspot{background:var(--hot);border-color:var(--hotline)}
+.hotspot:hover,.hotspot:focus-visible,.hotspot.active{
+  background:color-mix(in srgb,var(--accent) 18%,transparent);border-color:var(--accent2);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent);
+}
+.hotspot:active{transform:scale(.985)}
+.all-label{
+  position:absolute;pointer-events:none;opacity:0;transform:translateY(5px);transition:.16s ease;
+  min-width:95px;max-width:240px;background:rgba(12,15,22,.94);color:#fff;
+  border:1px solid rgba(255,255,255,.18);border-radius:11px;padding:7px 9px;
+  font-size:clamp(10px,1.35vw,14px);line-height:1.25;box-shadow:0 10px 28px rgba(0,0,0,.30);text-align:center;
+}
+body.show-all .all-label{opacity:1;transform:none}
+.floating-tools{
+  position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);
+  z-index:60;width:min(860px,calc(100% - 18px));border:1px solid var(--line);background:var(--panel);
+  backdrop-filter:blur(20px);border-radius:18px;padding:8px;display:flex;gap:7px;align-items:center;
+  box-shadow:var(--shadow);overflow-x:auto;scrollbar-width:none;
+}
+.floating-tools::-webkit-scrollbar{display:none}
+.pill-btn.primary{background:color-mix(in srgb,var(--accent) 22%,var(--panel-solid))}
+.tool-spacer{flex:1;min-width:8px}
+.page-nav{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.page-indicator{min-width:48px;text-align:center;color:var(--muted);font-size:13px;font-weight:750}
+.zoom-label{color:var(--muted);min-width:44px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.sheet-backdrop{
+  position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.48);opacity:0;pointer-events:none;transition:.18s ease
+}
+.translation-sheet{
+  position:fixed;z-index:81;right:22px;bottom:22px;width:min(440px,calc(100% - 28px));
+  background:var(--panel-solid);color:var(--text);border:1px solid var(--line);border-radius:22px;
+  box-shadow:0 30px 100px rgba(0,0,0,.42);transform:translateY(20px) scale(.985);
+  opacity:0;pointer-events:none;transition:.20s ease;overflow:hidden;
+}
+body.sheet-open .sheet-backdrop{opacity:1;pointer-events:auto}
+body.sheet-open .translation-sheet{opacity:1;transform:none;pointer-events:auto}
+.sheet-head{display:flex;gap:10px;align-items:center;padding:14px 15px 10px;border-bottom:1px solid var(--line)}
+.sheet-kind{color:var(--accent2);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.close-btn{margin-left:auto}
+.sheet-body{padding:16px}
+.translation-main{font-size:21px;line-height:1.35;font-weight:800;margin:0 0 15px}
+.jp-block,.note-block{border-top:1px solid var(--line);padding-top:13px;margin-top:13px}
+.meta-label{color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.jp-text{font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:18px;line-height:1.45}
+.romaji,.note{margin-top:7px;color:var(--muted);font-size:13px;line-height:1.5}
+.segmented{
+  display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:13px;
+  background:color-mix(in srgb,var(--bg) 60%,transparent);margin-top:15px;
+}
+.segmented button{
+  flex:1;min-height:34px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:750;cursor:pointer;
+}
+.segmented button.active{background:var(--panel-solid);color:var(--text);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.hidden{display:none!important}
+@media(max-width:720px){
+  main{padding-left:6px;padding-right:6px}
+  .info-card{border-radius:16px;margin-left:2px;margin-right:2px}
+  .translation-sheet{left:0;right:0;bottom:0;width:100%;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom);transform:translateY(28px)}
+  .floating-tools{bottom:max(7px,env(safe-area-inset-bottom))}
+  .wide-text,.zoom-reset{display:none}
+  .translation-main{font-size:19px}
+  .page-wrap{scroll-margin-top:70px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body class="guide-on">
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="atm-capitulos.html">← <span class="wide-text">Capítulos</span></a>
+    <div class="brand">
+      <div class="eyebrow">Leitor interativo</div>
+      <div class="brand-title">ATMおじさん · Capítulo 2</div>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="Alternar tema" title="Alternar tema">☾</button>
+    <button class="icon-btn" id="fullscreenBtn" aria-label="Tela cheia" title="Tela cheia">⛶</button>
+  </div>
+</header>
+
+<main>
+  <section class="info-card">
+    <div class="info-top">
+      <div class="info-copy">
+        <h1 class="info-title">Capítulo 2 — Circunstâncias de adultos (1)</h1>
+        <p class="info-sub">18 páginas · capítulo completo · Toque ou clique em um trecho japonês para abrir a tradução adaptada em português.</p>
+      </div>
+      <div class="badge">132 trechos</div>
+    </div>
+    <div class="tip"><span class="tip-dot"></span><span>As áreas clicáveis estão destacadas. “Mostrar todas” exibe as traduções diretamente sobre as páginas.</span></div>
+  </section>
+
+  <div class="reader" id="reader"></div>
+</main>
+
+<div class="floating-tools" role="toolbar" aria-label="Ferramentas do leitor">
+  <button class="pill-btn primary" id="showAllBtn">Mostrar <span class="wide-text">todas</span></button>
+  <button class="pill-btn" id="guideBtn">Marcações ✓</button>
+  <div class="tool-spacer"></div>
+  <div class="page-nav">
+    <button class="icon-btn" id="prevPage" aria-label="Página anterior" title="Página anterior">‹</button>
+    <div class="page-indicator" id="pageIndicator">1/18</div>
+    <button class="icon-btn" id="nextPage" aria-label="Próxima página" title="Próxima página">›</button>
+  </div>
+  <button class="icon-btn" id="zoomOut" aria-label="Diminuir zoom" title="Diminuir zoom">−</button>
+  <div class="zoom-label" id="zoomLabel">100%</div>
+  <button class="icon-btn" id="zoomIn" aria-label="Aumentar zoom" title="Aumentar zoom">＋</button>
+  <button class="icon-btn zoom-reset" id="zoomReset" aria-label="Restaurar zoom" title="Restaurar zoom">↺</button>
+</div>
+
+<div class="sheet-backdrop" id="backdrop"></div>
+<aside class="translation-sheet" id="sheet" aria-live="polite" aria-label="Tradução">
+  <div class="sheet-head">
+    <div class="sheet-kind" id="sheetKind">Fala</div>
+    <button class="icon-btn close-btn" id="closeSheet" aria-label="Fechar tradução">×</button>
+  </div>
+  <div class="sheet-body">
+    <p class="translation-main" id="ptText"></p>
+    <div class="jp-block" id="jpBlock">
+      <div class="meta-label">Japonês</div>
+      <div class="jp-text" id="jpText"></div>
+      <div class="romaji" id="romajiText"></div>
+    </div>
+    <div class="note-block" id="noteBlock">
+      <div class="meta-label">Nota da tradução</div>
+      <div class="note" id="noteText"></div>
+    </div>
+    <div class="segmented" aria-label="Detalhes exibidos">
+      <button data-mode="pt">Só PT-BR</button>
+      <button data-mode="jppt" class="active">JP + PT</button>
+      <button data-mode="notes">Com notas</button>
+    </div>
+  </div>
+</aside>
+
+<script>
+const pages = [{"number":1,"image":"atm-capitulo-2-p1.png","hotspots":[{"id":"p1-ominous","x":0.5,"y":3,"w":8,"h":34,"kind":"Narração","jp":"なにやら不穏な会話が…","romaji":"Nani yara fuon na kaiwa ga…","pt":"Parece que está rolando uma conversa bem suspeita…","note":"A narração introduz os homens que tramavam contra Meltina."},{"id":"p1-meltina-plot","x":72,"y":4,"w":21,"h":23,"kind":"Fala","jp":"メルティナめ… 娼館との契約も済んで ギルドの職員まで買収したっていうのに…","romaji":"Merutina me… shōkan to no keiyaku mo sunde, girudo no shokuin made baishū shita tte iu noni…","pt":"Aquela Meltina… Já tínhamos fechado o contrato com o bordel e subornado até funcionários da guilda…","note":"「め」 acrescenta desprezo ao nome; o grupo revela que armou para que Meltina fosse vendida."},{"id":"p1-repaid","x":26,"y":17,"w":17,"h":20,"kind":"Fala","jp":"まさか依頼を成功させて 金を返しやがるとは…","romaji":"Masaka irai o seikō sasete kane o kaeshi yagaru to wa…","pt":"Quem diria que ela concluiria a missão e devolveria o dinheiro…","note":"「やがる」 dá à fala um tom hostil e ressentido."},{"id":"p1-penalty","x":9,"y":26,"w":20,"h":22,"kind":"Fala","jp":"逆に俺たちが違約金払うハメになったじゃねーか！","romaji":"Gyaku ni oretachi ga iyakukin harau hame ni natta janē ka!","pt":"No fim, fomos nós que tivemos de pagar a multa por quebra de contrato!","note":"O plano fracassado trouxe prejuízo ao próprio grupo."},{"id":"p1-force","x":78,"y":46,"w":19,"h":25,"kind":"Fala","jp":"実力行使で借金ふっかけて 娼館に売り飛ばしてやりたいが…","romaji":"Jitsuryoku kōshi de shakkin fukkakete, shōkan ni uritobashite yaritai ga…","pt":"Eu queria usar a força, inventar outra dívida e vendê-la ao bordel…","note":"「借金をふっかける」 é impor ou inventar uma dívida abusiva."},{"id":"p1-former-party","x":72,"y":62,"w":22,"h":20,"kind":"Fala","jp":"大怪我してるとはいえ 元勇者パーティだった奴に手は出せねぇ…","romaji":"Ōkega shiteru to wa ie, moto yūsha pāti datta yatsu ni te wa dasenē…","pt":"Mas, mesmo gravemente ferida, não dá para mexer com alguém que já pertenceu ao grupo do Herói…","note":"Apesar da condição de Meltina, eles ainda temem sua experiência e força."},{"id":"p1-plan","x":69,"y":81,"w":22,"h":17,"kind":"Fala","jp":"お頭ァ こんなこともあろうかと 用意してたモンがございますぜ","romaji":"Okashira, konna koto mo arō ka to yōi shiteta mon ga gozaimasu ze.","pt":"Chefe, prevendo que algo assim pudesse acontecer, preparei uma coisinha.","note":"O subordinado afirma ter um plano de contingência."},{"id":"p1-idea","x":44,"y":48,"w":17,"h":17,"kind":"Fala","jp":"ああ？ 何かいい考えでもあんのか？","romaji":"Ā? Nanika ii kangae demo an no ka?","pt":"Hã? Você tem alguma boa ideia?","note":"O chefe pede que o subordinado explique o plano."},{"id":"p1-slave","x":42,"y":79,"w":19,"h":18,"kind":"Fala","jp":"丁度いい奴隷が手に入ったんで","romaji":"Chōdo ii dorei ga te ni haittan de.","pt":"É que consegui um escravo perfeito para o serviço.","note":"A fala prepara a revelação do novo inimigo."},{"id":"p1-mage","x":25,"y":47,"w":18,"h":19,"kind":"Fala","jp":"見てくだせェ!! 大剣使いの天敵… 魔導士でさぁ！","romaji":"Mite kudasē!! Taiken tsukai no tenteki… madōshi de sā!","pt":"Veja só!! O inimigo natural de quem usa uma espada grande… um mago!","note":"O grupo escolhe um mago por acreditar que ele leva vantagem contra o estilo de combate de Meltina."},{"id":"p1-platinum","x":8,"y":72,"w":26,"h":24,"kind":"Fala","jp":"しかもランクは白金級ときた!!","romaji":"Shikamo ranku wa hakkin-kyū to kita!!","pt":"E, para completar, ele é classe Platina!!","note":"「白金級」 é a classificação Platina usada para aventureiros de alto nível."}]},{"number":2,"image":"atm-capitulo-2-p2.png","hotspots":[{"id":"p2-this-guy","x":73,"y":3,"w":22,"h":28,"kind":"Fala","jp":"こいつなら あのメルティナ＝バレンタインに…","romaji":"Koitsu nara, ano Merutina Barentain ni…","pt":"Se for esse sujeito, até contra aquela Meltina Valentine…","note":"A fala continua no balão inferior e apresenta o adversário planejado."},{"id":"p2-can-win","x":13,"y":57,"w":25,"h":34,"kind":"Fala","jp":"勝てると思いますぜ!!","romaji":"Kateru to omoimasu ze!!","pt":"…acho que ele consegue vencer!!","note":"Conclusão direta da fala iniciada no alto da página."},{"id":"p2-series","x":31,"y":34,"w":49,"h":24,"kind":"Título","jp":"ATMおじさん 異世界でもモテ期が止まらない","romaji":"ATM Ojisan: Isekai demo moteki ga tomaranai","pt":"Tiozão ATM: Meu auge com as mulheres não para nem em outro mundo","note":"Título da série."},{"id":"p2-credits","x":62,"y":57,"w":33,"h":12,"kind":"Créditos","jp":"原作 林達永／作画 チェ・ミンジ","romaji":"Gensaku: Im Dal-yeong / Sakuga: Choi Min-ji","pt":"Obra original: Lim Dall-young / Arte: Choi Min-ji","note":"Créditos exibidos na abertura do capítulo."},{"id":"p2-chapter","x":47,"y":91,"w":50,"h":8,"kind":"Título do capítulo","jp":"第2話 大人の事情（1）","romaji":"Dai 2-wa: Otona no jijō (1)","pt":"Capítulo 2 — Circunstâncias de adultos (1)","note":"「大人の事情」 também pode sugerir assuntos ou conveniências que os adultos não explicam abertamente."}]},{"number":3,"image":"atm-capitulo-2-p3.png","hotspots":[{"id":"p3-three-days","x":77,"y":3,"w":15,"h":15,"kind":"Narração","jp":"3日後","romaji":"Mikka go","pt":"Três dias depois.","note":"Marca a passagem de tempo desde o final do capítulo anterior."},{"id":"p3-place","x":7,"y":7,"w":17,"h":18,"kind":"Narração","jp":"ビルトリアン大陸 ゲセンブルグのロマン","romaji":"Birutorian tairiku, Gesenburugu no Roman","pt":"Romain de Gesenbourg, continente de Biltorian.","note":"Indicação de local apresentada pelo capítulo; a romanização dos nomes próprios foi preservada."},{"id":"p3-cure","x":72,"y":28,"w":23,"h":24,"kind":"Fala de Meltina","jp":"あたしが マスターの女性恐怖症を…","romaji":"Atashi ga Masutā no josei kyōfushō o…","pt":"Eu vou curar a fobia de mulheres do Master…","note":"Meltina relembra a promessa feita no fim do capítulo anterior."},{"id":"p3-promise","x":8,"y":30,"w":22,"h":23,"kind":"Fala de Meltina","jp":"必ず治してあげる","romaji":"Kanarazu naoshite ageru.","pt":"…custe o que custar.","note":"「～てあげる」 transmite a intenção de fazer algo em benefício da outra pessoa."},{"id":"p3-revival","x":57,"y":60,"w":35,"h":17,"kind":"Fala de Daichi","jp":"やった!! 3年ぶりに… 私の息子が復活した!!","romaji":"Yatta!! Sannen buri ni… watashi no musuko ga fukkatsu shita!!","pt":"Consegui!! Depois de três anos… meu “filho” voltou à vida!!","note":"Daichi usa 「息子」, literalmente filho, como eufemismo cômico para o órgão sexual."},{"id":"p3-thanks","x":67,"y":79,"w":27,"h":19,"kind":"Fala de Daichi","jp":"ありがとう メルティナさん…!! 私に男としての人生を取り戻してくれて…!!","romaji":"Arigatō, Merutina-san…!! Watashi ni otoko to shite no jinsei o torimodoshite kurete…!!","pt":"Obrigado, Meltina-san…!! Você devolveu a minha vida como homem…!!","note":"A gratidão de Daichi aparece de forma deliberadamente exagerada."},{"id":"p3-no-problem","x":55,"y":77,"w":9,"h":11,"kind":"Fala de Meltina","jp":"いいのよ","romaji":"Ii no yo.","pt":"Não foi nada.","note":"Resposta tranquilizadora de Meltina."},{"id":"p3-small-thing","x":29,"y":84,"w":11,"h":13,"kind":"Fala de Meltina","jp":"これぐらい…","romaji":"Kore gurai…","pt":"Isso foi tão pouco…","note":"Ela minimiza o que fez por Daichi."},{"id":"p3-real-thanks","x":8,"y":80,"w":18,"h":18,"kind":"Fala de Daichi","jp":"本当に… 本当にありがとう…!!","romaji":"Hontō ni… hontō ni arigatō…!!","pt":"Muito… muito obrigado mesmo…!!","note":"Daichi repete o agradecimento, emocionado."}]},{"number":4,"image":"atm-capitulo-2-p4.png","hotspots":[{"id":"p4-kiss","x":35,"y":3,"w":48,"h":37,"kind":"Efeito sonoro","jp":"チュッ チュー","romaji":"Chu, chū","pt":"*beijo* *beijinho*","note":"Onomatopeia de beijos no sonho de Daichi."},{"id":"p4-thanks","x":71,"y":43,"w":20,"h":21,"kind":"Pensamento de Daichi","jp":"ありがとう… メルティナさん… 一瞬でもいい夢を見せてくれて…","romaji":"Arigatō… Merutina-san… isshun demo ii yume o misete kurete…","pt":"Obrigado, Meltina-san… por me deixar ter um belo sonho, mesmo que só por um instante…","note":"Daichi agradece mentalmente antes de perceber que a recuperação não se manteve."},{"id":"p4-three-days","x":44,"y":44,"w":20,"h":14,"kind":"Narração","jp":"奇跡のような復活から3日…","romaji":"Kiseki no yō na fukkatsu kara mikka…","pt":"Três dias desde aquela recuperação milagrosa…","note":"A narração retoma o salto temporal."},{"id":"p4-every-morning","x":9,"y":45,"w":20,"h":14,"kind":"Narração","jp":"期待とともに毎朝目を覚ますが…","romaji":"Kitai to tomo ni maiasa me o samasu ga…","pt":"Todas as manhãs, acordo cheio de expectativa, mas…","note":"Daichi espera que a melhora tenha sido permanente."},{"id":"p4-son","x":51,"y":66,"w":15,"h":13,"kind":"Narração","jp":"私の息子は…","romaji":"Watashi no musuko wa…","pt":"O meu “filho”…","note":"Continua o eufemismo usado por Daichi."},{"id":"p4-never-again","x":7,"y":69,"w":27,"h":23,"kind":"Narração","jp":"あの日以来 復活することはなかった","romaji":"Ano hi irai, fukkatsu suru koto wa nakatta.","pt":"…não voltou a despertar desde aquele dia.","note":"A melhora revelou-se apenas temporária."}]},{"number":5,"image":"atm-capitulo-2-p5.png","hotspots":[{"id":"p5-repaid","x":74,"y":2,"w":20,"h":22,"kind":"Fala de Meltina","jp":"今回の依頼で借金をかなり返せたの！","romaji":"Konkai no irai de shakkin o kanari kaeseta no!","pt":"Com o pagamento desta missão, consegui quitar boa parte da dívida!","note":"Meltina relata o resultado financeiro da missão anterior."},{"id":"p5-rehab","x":69,"y":19,"w":23,"h":23,"kind":"Fala de Meltina","jp":"リハビリに必要な時間も確保できたし 心配しないで!!","romaji":"Rihabiri ni hitsuyō na jikan mo kakuho dekita shi, shinpai shinaide!!","pt":"Também garanti o tempo necessário para a reabilitação, então não se preocupe!!","note":"Ela poderá se recuperar sem a pressão imediata da dívida."},{"id":"p5-repay-favor","x":8,"y":20,"w":20,"h":25,"kind":"Fala de Meltina","jp":"この恩は必ず返すね！ マスター！","romaji":"Kono on wa kanarazu kaesu ne! Masutā!","pt":"Eu vou retribuir este favor, Master!","note":"「恩」 é uma dívida de gratidão, não apenas uma dívida financeira."},{"id":"p5-bounty","x":66,"y":56,"w":27,"h":16,"kind":"Narração","jp":"偶然倒したヘルヴォルスには かなりの賞金が掛かっていたらしく…","romaji":"Gūzen taoshita Heruvorusu ni wa kanari no shōkin ga kakatte ita rashiku…","pt":"Parece que havia uma recompensa bem alta por Helvorz, que derrotamos por acaso…","note":"A recompensa pelo inimigo derrotado ajudou a resolver a dívida de Meltina."},{"id":"p5-new-life","x":8,"y":54,"w":29,"h":18,"kind":"Narração","jp":"メルティナさんは借金の大部分を返して 人生をやり直し始めることができた","romaji":"Merutina-san wa shakkin no daibubun o kaeshite, jinsei o yarinaoshi hajimeru koto ga dekita.","pt":"Meltina conseguiu pagar a maior parte da dívida e começar a reconstruir a vida.","note":"A missão criou uma oportunidade concreta de recomeço."},{"id":"p5-brothel","x":72,"y":71,"w":20,"h":15,"kind":"Pensamento de Daichi","jp":"娼館行きは免れたみたいで よかったな…","romaji":"Shōkan iki wa manugareta mitai de yokatta na…","pt":"Ainda bem que ela parece ter escapado de ser mandada para um bordel…","note":"Daichi demonstra alívio pelo destino evitado."},{"id":"p5-quit","x":8,"y":73,"w":28,"h":22,"kind":"Pensamento de Daichi","jp":"でも… あんな凄いスキルがあるのに… 冒険者を辞めたなんて…","romaji":"Demo… anna sugoi sukiru ga aru noni… bōkensha o yameta nante…","pt":"Mas… mesmo possuindo uma habilidade tão incrível… ela deixou de ser aventureira…","note":"Daichi estranha que Meltina tenha abandonado uma carreira para a qual parece tão capaz."}]},{"number":6,"image":"atm-capitulo-2-p6.png","hotspots":[{"id":"p6-team-up","x":70,"y":1,"w":24,"h":30,"kind":"Fala de Meltina","jp":"あたしと組んで もう一度冒険者をやらない!?","romaji":"Atashi to kunde, mō ichido bōkensha o yaranai!?","pt":"Que tal formar uma equipe comigo e voltar a ser aventureiro!?","note":"Meltina convida Daichi a retomar as aventuras ao lado dela."},{"id":"p6-great-things","x":6,"y":23,"w":25,"h":20,"kind":"Fala de Meltina","jp":"あたしたちなら もっと凄いことができるかも!!","romaji":"Atashitachi nara, motto sugoi koto ga dekiru kamo!!","pt":"Nós dois juntos talvez consigamos fazer coisas ainda mais incríveis!!","note":"Ela está entusiasmada com o potencial da dupla."},{"id":"p6-same","x":39,"y":47,"w":16,"h":15,"kind":"Pensamento de Daichi","jp":"これは… 同じだ…","romaji":"Kore wa… onaji da…","pt":"É… a mesma coisa…","note":"O convite desperta lembranças negativas em Daichi."},{"id":"p6-old-eyes","x":7,"y":46,"w":28,"h":25,"kind":"Pensamento de Daichi","jp":"私を頼り 利用し 次第に壊れていった彼らの目と…","romaji":"Watashi o tayori, riyō shi, shidai ni kowarete itta karera no me to…","pt":"O mesmo olhar daqueles que passaram a depender de mim, a me usar e, pouco a pouco, se destruíram…","note":"Daichi projeta na proposta de Meltina o trauma causado pelas pessoas que o exploravam."},{"id":"p6-sorry","x":8,"y":70,"w":22,"h":24,"kind":"Fala de Daichi","jp":"すみません… メルティナさん","romaji":"Sumimasen… Merutina-san.","pt":"Desculpe… Meltina-san.","note":"O pedido de desculpas precede a recusa na página seguinte."}]},{"number":7,"image":"atm-capitulo-2-p7.png","hotspots":[{"id":"p7-helping","x":69,"y":2,"w":23,"h":24,"kind":"Fala de Daichi","jp":"私がメルティナさんの冒険を手伝うのは…","romaji":"Watashi ga Merutina-san no bōken o tetsudau no wa…","pt":"Quanto a eu ajudar nas suas aventuras, Meltina-san…","note":"Daichi formula a recusa de maneira polida, mas firme."},{"id":"p7-only-once","x":68,"y":66,"w":24,"h":25,"kind":"Fala de Daichi","jp":"これっきりです","romaji":"Korekkiri desu.","pt":"…esta foi a primeira e a última vez.","note":"「これっきり」 significa que algo termina aqui e não voltará a acontecer."},{"id":"p7-too-harsh","x":12,"y":26,"w":28,"h":23,"kind":"Pensamento de Daichi","jp":"トラウマから ついキツい言いかたになってしまった…","romaji":"Torauma kara tsui kitsui iikata ni natte shimatta…","pt":"Por causa do trauma, acabei falando de um jeito duro demais…","note":"Daichi reconhece que a experiência passada afetou seu tom."},{"id":"p7-maybe-too-much","x":9,"y":47,"w":25,"h":17,"kind":"Pensamento de Daichi","jp":"言いすぎだったかもしれないな…","romaji":"Iisugi datta kamo shirenai na…","pt":"Talvez eu tenha passado dos limites…","note":"Ele se arrepende imediatamente da forma como respondeu."},{"id":"p7-sorry-meltina","x":56,"y":31,"w":20,"h":21,"kind":"Fala de Meltina","jp":"ご…ごめんね あたし 図々しくって…","romaji":"Go… gomen ne. Atashi, zuuzūshikute…","pt":"D-desculpe… Eu fui muito inconveniente…","note":"Meltina interpreta a reação como culpa de sua própria insistência."},{"id":"p7-no-consideration","x":41,"y":50,"w":25,"h":20,"kind":"Fala de Meltina","jp":"マスターの気持ちも考えずに あんなこと…！","romaji":"Masutā no kimochi mo kangaezu ni anna koto…!","pt":"Eu disse aquilo sem nem pensar nos sentimentos do Master…!","note":"Ela recua e respeita o limite de Daichi."},{"id":"p7-no-contact","x":49,"y":66,"w":22,"h":16,"kind":"Pensamento de Daichi","jp":"あれから連絡もないし… もう来ないかも…","romaji":"Are kara renraku mo nai shi… mō konai kamo…","pt":"Desde então ela não mandou notícias… Talvez não volte mais…","note":"O silêncio de Meltina deixa Daichi inquieto."},{"id":"p7-not-lonely","x":10,"y":68,"w":22,"h":19,"kind":"Pensamento de Daichi","jp":"いや 別に寂しいとかじゃなく…","romaji":"Iya, betsu ni sabishii toka janaku…","pt":"Não que eu esteja sentindo falta dela…","note":"Daichi tenta negar para si mesmo que sente a ausência de Meltina."},{"id":"p7-good-customer","x":8,"y":82,"w":22,"h":16,"kind":"Pensamento de Daichi","jp":"いい常連さん失ったのが残念というか…","romaji":"Ii jōren-san ushinatta no ga zannen to iu ka…","pt":"É só uma pena perder uma cliente tão fiel…","note":"Ele racionaliza a saudade como preocupação comercial."},{"id":"p7-master","x":3,"y":82,"w":13,"h":15,"kind":"Grito de Meltina","jp":"マスター!!","romaji":"Masutā!!","pt":"Master!!","note":"Meltina reaparece de repente."}]},{"number":8,"image":"atm-capitulo-2-p8.png","hotspots":[{"id":"p8-open","x":76,"y":1,"w":21,"h":17,"kind":"Fala de Meltina","jp":"もうお店開けて大丈夫なんだ…","romaji":"Mō omise akete daijōbu nan da…","pt":"Então você já está bem o bastante para abrir a loja…","note":"Meltina nota que Daichi voltou ao trabalho."},{"id":"p8-back","x":37,"y":9,"w":23,"h":16,"kind":"Fala de Meltina","jp":"腰は治ったの？","romaji":"Koshi wa naotta no?","pt":"Sua lombar já melhorou?","note":"Ela pergunta pela lesão sofrida por Daichi."},{"id":"p8-surprise","x":7,"y":16,"w":18,"h":16,"kind":"Fala de Daichi","jp":"メルティナさん…!?","romaji":"Merutina-san…!?","pt":"Meltina-san…!?","note":"Daichi não esperava que ela retornasse."},{"id":"p8-thought-gone","x":8,"y":37,"w":24,"h":25,"kind":"Pensamento de Daichi","jp":"キツいこと言っちゃったから… もう来てくれないかと思ったのに…","romaji":"Kitsui koto icchatta kara… mō kite kurenai ka to omotta noni…","pt":"Depois do jeito duro como falei… achei que você não voltaria…","note":"Ele se sente aliviado ao vê-la novamente."},{"id":"p8-different-look","x":45,"y":66,"w":18,"h":20,"kind":"Pensamento de Daichi","jp":"髪型とか服装が普段と違うって…!!","romaji":"Kamigata toka fukusō ga fudan to chigau tte…!!","pt":"O penteado e as roupas dela estão diferentes de sempre…!!","note":"Daichi repara na mudança deliberada de visual."},{"id":"p8-strange","x":72,"y":72,"w":23,"h":20,"kind":"Fala de Meltina","jp":"…あたし何か変？ そんなにじっと見て…","romaji":"…Atashi nanika hen? Sonna ni jitto mite…","pt":"Eu estou estranha? Você está me encarando tanto…","note":"Meltina percebe o olhar fixo de Daichi."},{"id":"p8-no","x":52,"y":79,"w":16,"h":16,"kind":"Fala de Daichi","jp":"いいえ！ 全然!!","romaji":"Iie! Zenzen!!","pt":"Não! De jeito nenhum!!","note":"Daichi responde rapidamente, constrangido."},{"id":"p8-cant-help","x":27,"y":75,"w":17,"h":20,"kind":"Pensamento de Daichi","jp":"気になってしまって…!!","romaji":"Ki ni natte shimatte…!!","pt":"É que não consigo deixar de reparar…!!","note":"Ele está claramente atraído pelo novo visual."}]},{"number":9,"image":"atm-capitulo-2-p9.png","hotspots":[{"id":"p9-doesnt-suit","x":74,"y":2,"w":20,"h":17,"kind":"Fala de Meltina","jp":"やっぱり… 似合わないかな…？","romaji":"Yappari… niawanai kana…?","pt":"Como eu imaginava… será que não combina comigo…?","note":"Meltina interpreta o silêncio de Daichi como desaprovação."},{"id":"p9-adult-look","x":69,"y":26,"w":25,"h":27,"kind":"Fala de Meltina","jp":"こういう大人っぽい感じ… マスターは… すすす… 好きじゃない…？","romaji":"Kō iu otona-ppoi kanji… Masutā wa… su-su-su… suki janai…?","pt":"Esse visual mais adulto… o Master n-n-não gosta…?","note":"A gagueira denuncia o nervosismo de Meltina ao perguntar sobre o gosto dele."},{"id":"p9-dont-like","x":7,"y":28,"w":24,"h":27,"kind":"Fala de Meltina","jp":"好きじゃない…？","romaji":"Suki janai…?","pt":"Você não gosta…?","note":"O enquadramento destaca a ambiguidade romântica de 「好き」, gostar."},{"id":"p9-i-like","x":45,"y":69,"w":22,"h":18,"kind":"Fala de Daichi","jp":"いいえ 好きですよ よく似合ってると思います","romaji":"Iie, suki desu yo. Yoku niatteru to omoimasu.","pt":"Não, eu gosto. Acho que combina muito com você.","note":"Daichi se refere ao visual, mas a frase soa quase como uma declaração."},{"id":"p9-obvious","x":30,"y":71,"w":16,"h":20,"kind":"Fala da cliente","jp":"分かりやすい慰めはいらないから…","romaji":"Wakariyasui nagusame wa iranai kara…","pt":"Não precisa tentar consolá-la de um jeito tão óbvio…","note":"A cliente interpreta a resposta como mera tentativa de consolo."},{"id":"p9-forced","x":30,"y":79,"w":17,"h":14,"kind":"Comentário","jp":"わざとらしいなぁ","romaji":"Wazatorashii nā.","pt":"Que jeito forçado…","note":"Comentário cômico sobre a fala de Daichi."},{"id":"p9-still-not-enough","x":4,"y":72,"w":27,"h":23,"kind":"Pensamento de Daichi","jp":"やっぱりマスターの女性恐怖症を治すには まだまだ足りないってことか","romaji":"Yappari Masutā no josei kyōfushō o naosu ni wa mada mada tarinai tte koto ka.","pt":"Então ainda falta muito para curar a fobia de mulheres do Master…","note":"Meltina conclui que apenas mudar o visual não foi suficiente."}]},{"number":10,"image":"atm-capitulo-2-p10.png","hotspots":[{"id":"p10-phobia","x":72,"y":1,"w":22,"h":25,"kind":"Pensamento de Daichi","jp":"女性恐怖症って…!?","romaji":"Josei kyōfushō tte…!?","pt":"Fobia de mulheres…!?","note":"Daichi percebe que Meltina levou ao pé da letra a desculpa que ele havia dado."},{"id":"p10-outfit-reason","x":8,"y":8,"w":23,"h":22,"kind":"Pensamento de Daichi","jp":"そうか それで わざわざあんな格好で…!!","romaji":"Sō ka, sore de wazawaza anna kakkō de…!!","pt":"Entendi… Foi por isso que ela se deu ao trabalho de usar aquela roupa…!!","note":"Ele compreende a intenção por trás do novo visual."},{"id":"p10-promise-memory","x":70,"y":38,"w":23,"h":20,"kind":"Lembrança de Meltina","jp":"あたし頑張って マスターの女性恐怖症を…","romaji":"Atashi ganbatte Masutā no josei kyōfushō o…","pt":"Eu vou me esforçar para curar a fobia de mulheres do Master…","note":"Recordação da promessa de Meltina."},{"id":"p10-cure-memory","x":7,"y":39,"w":23,"h":18,"kind":"Lembrança de Meltina","jp":"必ず治してあげるから…!!","romaji":"Kanarazu naoshite ageru kara…!!","pt":"…custe o que custar!!","note":"A determinação dela explica as atitudes atuais."},{"id":"p10-so-far","x":62,"y":57,"w":23,"h":15,"kind":"Pensamento de Daichi","jp":"あの言葉通りにここまでするなんて…","romaji":"Ano kotoba dōri ni koko made suru nante…","pt":"Ela foi tão longe para cumprir aquelas palavras…","note":"Daichi reconhece a sinceridade da promessa."},{"id":"p10-serious","x":8,"y":58,"w":25,"h":15,"kind":"Pensamento de Daichi","jp":"本当に真面目な人だな メルティナさん","romaji":"Hontō ni majime na hito da na, Merutina-san.","pt":"Meltina-san é mesmo uma pessoa muito sincera.","note":"「真面目」 combina seriedade, honestidade e dedicação."},{"id":"p10-who-is-she","x":74,"y":72,"w":22,"h":21,"kind":"Fala da cliente","jp":"マスター その綺麗なお嬢さんは？ ひょっとして未来の奥さんかしら…？","romaji":"Masutā, sono kirei na ojōsan wa? Hyottoshite mirai no okusan kashira…?","pt":"Master, quem é essa moça bonita? Será que é sua futura esposa…?","note":"A cliente provoca Daichi ao interpretar o clima entre os dois."},{"id":"p10-wife","x":42,"y":73,"w":18,"h":16,"kind":"Fala de Daichi","jp":"おお 奥さんだなんて!! 常連さんですよ!! 常連さん!!","romaji":"O-o, okusan da nante!! Jōren-san desu yo!! Jōren-san!!","pt":"E-esposa!? Ela é uma cliente habitual!! Uma cliente habitual!!","note":"Daichi se apressa em negar, visivelmente constrangido."},{"id":"p10-rude","x":5,"y":76,"w":25,"h":18,"kind":"Fala de Daichi","jp":"メルティナさんに失礼ですって!!","romaji":"Merutina-san ni shitsurei desu tte!!","pt":"Isso é indelicado com a Meltina-san!!","note":"Ele tenta desviar a provocação para uma questão de educação."},{"id":"p10-sorry","x":6,"y":86,"w":20,"h":12,"kind":"Fala da cliente","jp":"あら ごめんなさい 開店前だからつい…","romaji":"Ara, gomen nasai. Kaiten mae dakara tsui…","pt":"Ah, desculpe. Como ainda não abrimos, acabei brincando…","note":"A cliente trata a provocação como conversa informal antes do expediente."}]},{"number":11,"image":"atm-capitulo-2-p11.png","hotspots":[{"id":"p11-help-shop","x":72,"y":1,"w":22,"h":24,"kind":"Fala da cliente","jp":"お店を手伝いに来たのかと思っちゃったわ","romaji":"Omise o tetsudai ni kita no ka to omocchatta wa.","pt":"Pensei que ela tivesse vindo ajudar na loja.","note":"A mulher supõe que Meltina veio resolver a falta de funcionários."},{"id":"p11-yesterday","x":70,"y":18,"w":23,"h":22,"kind":"Fala da cliente","jp":"だってダイチさん 昨日もお店開けられなくて悩んでたでしょう？","romaji":"Datte Daichi-san, kinō mo omise akerarenakute nayandeta deshō?","pt":"Afinal, Daichi, ontem você estava preocupado porque não conseguia abrir a loja, não estava?","note":"Daichi ainda enfrentava dificuldades para tocar o estabelecimento sozinho."},{"id":"p11-need-help","x":8,"y":2,"w":22,"h":25,"kind":"Fala da cliente","jp":"だから手伝いが必要なんじゃないかって…","romaji":"Dakara tetsudai ga hitsuyō nan janai ka tte…","pt":"Por isso pensei que talvez você precisasse de ajuda…","note":"Ela explica por que confundiu Meltina com uma nova funcionária."},{"id":"p11-adventurer","x":70,"y":34,"w":22,"h":20,"kind":"Fala de Daichi","jp":"確かにそうですけど… この人は違いますよ だって彼女は冒険者で…","romaji":"Tashika ni sō desu kedo… kono hito wa chigaimasu yo. Datte kanojo wa bōkensha de…","pt":"É verdade, mas… ela não. Afinal, a Meltina é aventureira…","note":"Daichi presume que o trabalho no bar não combina com a ocupação dela."},{"id":"p11-can-help","x":5,"y":52,"w":45,"h":43,"kind":"Fala de Meltina","jp":"手伝おうか？ 手伝ってもいいよ？","romaji":"Tetsudaō ka? Tetsudatte mo ii yo?","pt":"Quer que eu ajude? Eu posso ajudar, sabia?","note":"Meltina se oferece imediatamente, com entusiasmo."}]},{"number":12,"image":"atm-capitulo-2-p12.png","hotspots":[{"id":"p12-welcome","x":69,"y":4,"w":25,"h":19,"kind":"Fala de Meltina","jp":"いらっしゃいませー パブ・ダイチです!!","romaji":"Irasshaimase— Pabu Daichi desu!!","pt":"Sejam bem-vindos ao Pub Daichi!!","note":"Saudação típica usada por funcionários ao receber clientes."},{"id":"p12-this-way","x":8,"y":7,"w":23,"h":20,"kind":"Fala de Meltina","jp":"あちらにご案内致します!!","romaji":"Achira ni go-annai itashimasu!!","pt":"Por aqui, por favor!!","note":"Meltina usa uma forma bastante polida de atendimento."},{"id":"p12-two-meals","x":10,"y":38,"w":20,"h":17,"kind":"Fala de Meltina","jp":"焼肉定食2人前です！","romaji":"Yakiniku teishoku futari-mae desu!","pt":"Dois pratos de carne grelhada!","note":"「定食」 é uma refeição completa servida como conjunto."},{"id":"p12-more-bread","x":10,"y":51,"w":19,"h":17,"kind":"Fala de Meltina","jp":"パンの追加ですね！ ただいまお持ちします！","romaji":"Pan no tsuika desu ne! Tadaima omochi shimasu!","pt":"Mais pão, certo? Já vou trazer!","note":"Ela confirma o pedido antes de atendê-lo."},{"id":"p12-more-beer","x":42,"y":66,"w":20,"h":19,"kind":"Fala de Meltina","jp":"ビールのお代わりはいかがですか～？","romaji":"Bīru no okawari wa ikaga desu ka?","pt":"Gostariam de mais cerveja?","note":"「お代わり」 é outra porção ou reposição da bebida."},{"id":"p12-here","x":9,"y":69,"w":20,"h":18,"kind":"Fala de Meltina","jp":"はい こちらになります!!","romaji":"Hai, kochira ni narimasu!!","pt":"Sim, aqui está!!","note":"Meltina entrega o pedido com energia."}]},{"number":13,"image":"atm-capitulo-2-p13.png","hotspots":[{"id":"p13-chatter","x":8,"y":1,"w":80,"h":31,"kind":"Ambiente","jp":"ガヤ ガヤ","romaji":"Gaya gaya","pt":"*burburinho*","note":"Onomatopeia de muitas pessoas conversando num ambiente movimentado."},{"id":"p13-order","x":76,"y":34,"w":22,"h":17,"kind":"Fala de cliente","jp":"お嬢ちゃん～！ 注文お願い!!","romaji":"Ojō-chan! Chūmon onegai!!","pt":"Moça! Anota meu pedido!!","note":"Forma informal de chamar uma atendente jovem."},{"id":"p13-coming","x":67,"y":67,"w":27,"h":24,"kind":"Fala de Meltina","jp":"はい！ ただいま～!!","romaji":"Hai! Tadaima—!!","pt":"Sim! Já vou!!","note":"Meltina responde prontamente ao cliente."},{"id":"p13-really-not-wife","x":41,"y":43,"w":20,"h":20,"kind":"Fala da cliente","jp":"本当に奥さんじゃないの…？","romaji":"Hontō ni okusan janai no…?","pt":"Ela não é mesmo sua esposa…?","note":"A cliente continua provocando Daichi."},{"id":"p13-stop-joking","x":10,"y":54,"w":20,"h":18,"kind":"Fala de Daichi","jp":"冗談はやめてくださいよ～","romaji":"Jōdan wa yamete kudasai yo—.","pt":"Pare com essa brincadeira…","note":"Daichi tenta encerrar o assunto com leveza."},{"id":"p13-age-gap","x":6,"y":67,"w":24,"h":18,"kind":"Fala de Daichi","jp":"いくつ離れてると思ってるんですか？","romaji":"Ikutsu hanareteru to omotterun desu ka?","pt":"Quantos anos você acha que nos separam?","note":"Daichi usa a diferença de idade para rejeitar a ideia romântica."},{"id":"p13-over-forty","x":39,"y":78,"w":16,"h":16,"kind":"Pensamento de Daichi","jp":"私だってもう40すぎですけど…","romaji":"Watashi datte mō yonjū-sugi desu kedo…","pt":"Eu já passei dos quarenta…","note":"Daichi reforça a própria insegurança em relação à idade."},{"id":"p13-advice","x":37,"y":83,"w":18,"h":15,"kind":"Fala da cliente","jp":"人生の先輩として忠告しておくけどね…","romaji":"Jinsei no senpai to shite chūkoku shite oku kedo ne…","pt":"Como alguém mais experiente na vida, vou lhe dar um conselho…","note":"「先輩」 aqui indica alguém com mais experiência de vida."},{"id":"p13-she-likes-you","x":4,"y":79,"w":28,"h":18,"kind":"Fala da cliente","jp":"あの子きっとダイチさんに気があるわよ","romaji":"Ano ko kitto Daichi-san ni ki ga aru wa yo.","pt":"Aquela garota com certeza está interessada em você.","note":"「気がある」 significa ter interesse romântico em alguém."}]},{"number":14,"image":"atm-capitulo-2-p14.png","hotspots":[{"id":"p14-again","x":74,"y":2,"w":22,"h":17,"kind":"Fala de Daichi","jp":"またまた～ そんなこと…","romaji":"Mata mata— sonna koto…","pt":"Lá vem você de novo… Não diga uma coisa dessas…","note":"Daichi tenta descartar a sugestão como outra brincadeira."},{"id":"p14-refill","x":70,"y":14,"w":18,"h":12,"kind":"Fala da cliente","jp":"おかわりちょうだい","romaji":"Okawari chōdai.","pt":"Quero mais uma.","note":"A cliente pede outra bebida enquanto continua a conversa."},{"id":"p14-serious","x":44,"y":3,"w":23,"h":21,"kind":"Fala da cliente","jp":"真面目な話よ… 同じ女としての勘！","romaji":"Majime na hanashi yo… onaji onna to shite no kan!","pt":"Estou falando sério… É intuição de mulher!","note":"Ela afirma reconhecer o interesse de Meltina."},{"id":"p14-personality","x":45,"y":17,"w":23,"h":18,"kind":"Fala da cliente","jp":"周りまで明るくするような あの性格だって文句なしじゃない","romaji":"Mawari made akaruku suru yō na ano seikaku datte monku nashi janai.","pt":"E aquela personalidade que ilumina tudo ao redor é simplesmente impecável.","note":"A cliente elogia a energia contagiante de Meltina."},{"id":"p14-settle-down","x":7,"y":4,"w":23,"h":22,"kind":"Fala da cliente","jp":"ダイチさんだって そろそろ身を固めたいでしょう？","romaji":"Daichi-san datte sorosoro mi o katametai deshō?","pt":"Daichi, você também já deve estar pensando em sossegar e formar família, não?","note":"「身を固める」 é estabilizar a vida, frequentemente por meio do casamento."},{"id":"p14-enough-drinking","x":67,"y":31,"w":28,"h":24,"kind":"Fala de Daichi","jp":"はい 酔っぱらいはそこまで！ このサービスでお開きにしましょうね！","romaji":"Hai, yopparai wa soko made! Kono sābisu de ohiraki ni shimashō ne!","pt":"Certo, chega de bebida! Vamos encerrar por aqui com esta cortesia!","note":"Daichi tenta cortar a conversa e fechar a conta."},{"id":"p14-husband","x":59,"y":47,"w":18,"h":14,"kind":"Fala de Daichi","jp":"ご主人も心配しますよ？","romaji":"Goshujin mo shinpai shimasu yo?","pt":"Seu marido vai ficar preocupado, sabia?","note":"Ele usa o marido dela como argumento para terminar a noite."},{"id":"p14-dodge","x":8,"y":38,"w":27,"h":21,"kind":"Fala da cliente","jp":"ごまかすつもり？ だってあの子を見つめる視線がさ～","romaji":"Gomakasu tsumori? Datte ano ko o mitsumeru shisen ga sa—.","pt":"Está tentando desconversar? É que o jeito como você olha para aquela garota…","note":"A cliente sugere que o interesse é recíproco."},{"id":"p14-pleasant","x":69,"y":59,"w":24,"h":18,"kind":"Fala de Daichi","jp":"見ていて気分のいいものは間違いないです","romaji":"Mite ite kibun no ii mono wa machigai nai desu.","pt":"Não há dúvida de que é agradável vê-la.","note":"Daichi admite admirar Meltina, ainda que de forma contida."},{"id":"p14-hardworking","x":6,"y":63,"w":22,"h":18,"kind":"Fala de Daichi","jp":"何にでも一生懸命ですし","romaji":"Nani ni demo isshōkenmei desu shi.","pt":"Ela se dedica de verdade a tudo.","note":"Ele reconhece o empenho constante de Meltina."},{"id":"p14-from-afar","x":66,"y":75,"w":29,"h":22,"kind":"Fala de Daichi","jp":"だからこそ いい歳のおっさんは こうして遠くから見ているだけで十分ですよ","romaji":"Dakara koso, ii toshi no ossan wa kōshite tōku kara mite iru dake de jūbun desu yo.","pt":"Justamente por isso, para um tiozão da minha idade, basta observá-la de longe.","note":"Daichi transforma a diferença de idade em uma barreira para se aproximar."},{"id":"p14-lost-shine","x":7,"y":80,"w":27,"h":18,"kind":"Fala de Daichi","jp":"分かるでしょう？ 私たちはもう失ってしまった あの輝き…","romaji":"Wakaru deshō? Watashitachi wa mō ushinatte shimatta ano kagayaki…","pt":"Você entende, não? Aquele brilho que nós já perdemos…","note":"A frase continua na página seguinte."}]},{"number":15,"image":"atm-capitulo-2-p15.png","hotspots":[{"id":"p15-youth","x":5,"y":3,"w":86,"h":48,"kind":"Fala de Daichi","jp":"青春という眩しい光が…","romaji":"Seishun to iu mabushii hikari ga…","pt":"Aquela luz deslumbrante chamada juventude…","note":"Continuação da reflexão de Daichi sobre o brilho de Meltina."},{"id":"p15-hermit","x":72,"y":75,"w":23,"h":20,"kind":"Fala da cliente","jp":"世捨て人みたいなこと言ってんじゃないわよ それでも男かい？","romaji":"Yosutebito mitai na koto itten janai wa yo. Sore demo otoko kai?","pt":"Pare de falar como um eremita que desistiu do mundo. Você ainda é homem?","note":"「世捨て人」 é alguém que se afastou da vida mundana."},{"id":"p15-blood-boil","x":7,"y":77,"w":24,"h":20,"kind":"Fala da cliente","jp":"若い子見て滾らなかったら 男として終わりだよ","romaji":"Wakai ko mite tagiranakattara, otoko to shite owari da yo.","pt":"Se olhar para uma moça jovem não fizer seu sangue ferver, você acabou como homem.","note":"「滾る」 literalmente evoca ferver; aqui significa sentir vigor ou desejo."}]},{"number":16,"image":"atm-capitulo-2-p16.png","hotspots":[{"id":"p16-triple","x":55,"y":3,"w":28,"h":28,"kind":"Fala de Daichi","jp":"ななっ!? 売上が普段の3倍!?","romaji":"Nana!? Uriage ga fudan no sanbai!?","pt":"O quê!? O faturamento foi três vezes maior que o normal!?","note":"Daichi se espanta com o efeito de Meltina sobre o movimento da loja."},{"id":"p16-stew","x":61,"y":44,"w":33,"h":19,"kind":"Fala de Meltina","jp":"すごーい マスター!! 新メニューのすじ肉シチューは大成功ね!!","romaji":"Sugōi, Masutā!! Shin menyū no sujiniku shichū wa daiseikō ne!!","pt":"Incrível, Master!! O novo ensopado de carne com tendão foi um grande sucesso!!","note":"「すじ肉」 é carne rica em tendões, comum em cozidos demorados."},{"id":"p16-sold-crazy","x":7,"y":44,"w":24,"h":19,"kind":"Fala da cliente","jp":"もうバカ売れだったわよ～!!","romaji":"Mō bakaure datta wa yo—!!","pt":"Vendeu que nem água!!","note":"「バカ売れ」 é uma expressão informal para algo que vende enormemente."},{"id":"p16-youth-power","x":68,"y":69,"w":22,"h":20,"kind":"Pensamento de Daichi","jp":"これが… 若さの力ってやつか…!?","romaji":"Kore ga… wakasa no chikara tte yatsu ka…!?","pt":"Então esse é… o poder da juventude!?","note":"Daichi associa inicialmente o sucesso ao frescor e à energia de Meltina."},{"id":"p16-her-power","x":31,"y":71,"w":25,"h":21,"kind":"Pensamento de Daichi","jp":"いや 違うな… これは何にでも一生懸命な… 彼女自身の力だ","romaji":"Iya, chigau na… kore wa nani ni demo isshōkenmei na… kanojo jishin no chikara da.","pt":"Não, não é isso… Este é o poder dela própria, que se dedica de coração a tudo.","note":"Ele corrige a própria visão e atribui o resultado ao esforço de Meltina."},{"id":"p16-useful","x":8,"y":75,"w":20,"h":18,"kind":"Fala de Meltina","jp":"どう？ ちょっと役に立った？","romaji":"Dō? Chotto yaku ni tatta?","pt":"E então? Consegui ajudar um pouquinho?","note":"Meltina procura a aprovação de Daichi."}]},{"number":17,"image":"atm-capitulo-2-p17.png","hotspots":[{"id":"p17-her-credit","x":66,"y":2,"w":27,"h":20,"kind":"Fala de Daichi","jp":"これは紛れもなくメルティナさんのお陰です ということでバイト代も3倍払います","romaji":"Kore wa magire mo naku Merutina-san no okage desu. To iu koto de baito-dai mo sanbai haraimasu.","pt":"Isso foi, sem dúvida, graças à Meltina-san. Por isso, vou pagar o triplo pelo trabalho.","note":"Daichi reconhece diretamente a contribuição dela e decide remunerá-la de forma justa."},{"id":"p17-cant-accept","x":45,"y":3,"w":20,"h":18,"kind":"Fala de Meltina","jp":"もらえないわよ！ あたしが好きでやっただけなのに…","romaji":"Moraenai wa yo! Atashi ga suki de yatta dake na noni…","pt":"Não posso aceitar! Eu só fiz isso porque quis…","note":"Meltina considera a ajuda uma escolha pessoal, não um serviço a cobrar."},{"id":"p17-settle","x":50,"y":24,"w":31,"h":13,"kind":"Fala de Daichi","jp":"いや こういうのはしっかりしとかないとほうがいいです","romaji":"Iya, kō iu no wa shikkari shitokanai to hō ga ii desu.","pt":"Não, é melhor deixar esse tipo de coisa bem acertado.","note":"Daichi quer evitar uma relação de exploração ou uma dívida mal definida."},{"id":"p17-accept","x":48,"y":33,"w":29,"h":14,"kind":"Fala de Meltina","jp":"それじゃお言葉に甘えて… いただきます！","romaji":"Sore ja okotoba ni amaete… itadakimasu!","pt":"Então vou aceitar a sua gentileza… Obrigada!","note":"「お言葉に甘えて」 é aceitar uma oferta confiando na boa vontade de quem a fez."},{"id":"p17-promise-bath","x":5,"y":7,"w":32,"h":26,"kind":"Fala de Meltina","jp":"当分は手伝うって約束したし 帰りに銭湯でも入ってリフレッシュしますか～！","romaji":"Tōbun wa tetsudau tte yakusoku shita shi, kaeri ni sentō demo haitte rifuresshu shimasu ka—!","pt":"Prometi ajudar por algum tempo; na volta, vou passar numa casa de banhos para relaxar!","note":"「銭湯」 é um banho público tradicional japonês, adaptado aqui ao cenário fantástico."},{"id":"p17-tomorrow","x":5,"y":38,"w":27,"h":19,"kind":"Fala de Meltina","jp":"明日も早めに来るね マスター!!","romaji":"Ashita mo hayame ni kuru ne, Masutā!!","pt":"Amanhã também venho cedo, Master!!","note":"Meltina confirma que continuará ajudando no bar."},{"id":"p17-closed","x":66,"y":45,"w":25,"h":17,"kind":"Fala de Daichi","jp":"銭湯？ もう終わってますけど…","romaji":"Sentō? Mō owattemasu kedo…","pt":"Casa de banhos? Já está fechada…","note":"Daichi aponta que o horário de funcionamento acabou."},{"id":"p17-what","x":6,"y":48,"w":23,"h":17,"kind":"Grito de Meltina","jp":"えええええーっ!?","romaji":"Eeeee—!?","pt":"O quêêêê!?","note":"Reação exagerada de surpresa e decepção."},{"id":"p17-late","x":71,"y":66,"w":22,"h":19,"kind":"Fala de Meltina","jp":"もうそんな時間？ 楽しくて時間が経つの忘れちゃった～","romaji":"Mō sonna jikan? Tanoshikute jikan ga tatsu no wasurechatta—.","pt":"Já ficou tão tarde? Eu me diverti tanto que perdi a noção do tempo…","note":"Meltina revela o quanto gostou de trabalhar no bar."},{"id":"p17-go-home","x":40,"y":67,"w":22,"h":21,"kind":"Fala de Meltina","jp":"お風呂で今日を締めたかったけど 仕方ない このまま帰るか…","romaji":"Ofuro de kyō o shimetakatta kedo, shikata nai. Kono mama kaeru ka…","pt":"Eu queria terminar o dia com um banho, mas paciência… vou voltar assim mesmo.","note":"Ela resigna-se a ir embora sem o banho que planejava."},{"id":"p17-my-place","x":6,"y":68,"w":24,"h":25,"kind":"Fala de Daichi","jp":"もしよかったら… ウチで入ります？","romaji":"Moshi yokattara… uchi de hairimasu?","pt":"Se você quiser… pode tomar banho lá em casa.","note":"O convite de Daichi conduz diretamente à imagem final do capítulo."}]},{"number":18,"image":"atm-capitulo-2-p18.png","hotspots":[{"id":"p18-bath","x":66,"y":7,"w":25,"h":25,"kind":"Fala de Meltina","jp":"お風呂…","romaji":"Ofuro…","pt":"Um banho…","note":"Meltina repete a palavra, surpresa com o convite de Daichi."},{"id":"p18-next","x":6,"y":92,"w":28,"h":7,"kind":"Texto editorial","jp":"第3話へつづく！","romaji":"Dai 3-wa e tsuzuku!","pt":"Continua no capítulo 3!","note":"Mensagem editorial que encerra o capítulo 2."}]}];
+const reader = document.getElementById('reader');
+const body = document.body;
+const root = document.documentElement;
+
+let zoom = Number(localStorage.getItem('mangaZoom') || 1);
+let detailMode = localStorage.getItem('mangaDetailMode') || 'jppt';
+let guide = localStorage.getItem('mangaGuide') !== 'off';
+let showAll = false;
+let currentPage = 1;
+
+function makeReader() {
+  pages.forEach(page => {
+    const wrap = document.createElement('section');
+    wrap.className = 'page-wrap';
+    wrap.id = `page-${page.number}`;
+    wrap.dataset.page = page.number;
+
+    const meta = document.createElement('div');
+    meta.className = 'page-meta';
+    meta.innerHTML = `<span class="page-chip">Página ${page.number}</span><span>${page.hotspots.length} trechos interativos</span>`;
+
+    const scroll = document.createElement('div');
+    scroll.className = 'page-scroll';
+
+    const shell = document.createElement('div');
+    shell.className = 'page-shell';
+    shell.dataset.page = page.number;
+
+    const img = document.createElement('img');
+    img.src = page.image;
+    img.alt = `Página ${page.number} do capítulo 2 do mangá em japonês`;
+    img.draggable = false;
+    shell.appendChild(img);
+
+    page.hotspots.forEach(h => {
+      const btn = document.createElement('button');
+      btn.className = 'hotspot';
+      btn.dataset.id = h.id;
+      btn.setAttribute('aria-label', `Abrir tradução: ${h.jp}`);
+      btn.style.left = h.x + '%';
+      btn.style.top = h.y + '%';
+      btn.style.width = h.w + '%';
+      btn.style.height = h.h + '%';
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        openTranslation(page.number, h, btn);
+      });
+      shell.appendChild(btn);
+
+      const label = document.createElement('div');
+      label.className = 'all-label';
+      label.textContent = h.pt;
+      const left = Math.min(78, Math.max(2, h.x + h.w * .12));
+      const top = Math.min(95, Math.max(1, h.y + h.h * .62));
+      label.style.left = left + '%';
+      label.style.top = top + '%';
+      shell.appendChild(label);
+    });
+
+    scroll.appendChild(shell);
+    wrap.appendChild(meta);
+    wrap.appendChild(scroll);
+    reader.appendChild(wrap);
+  });
+}
+
+function openTranslation(pageNumber, h, btn) {
+  document.querySelectorAll('.hotspot.active').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sheetKind').textContent = `Página ${pageNumber} · ${h.kind}`;
+  document.getElementById('ptText').textContent = h.pt;
+  document.getElementById('jpText').textContent = h.jp;
+  document.getElementById('romajiText').textContent = h.romaji;
+  document.getElementById('noteText').textContent = h.note;
+  applyDetailMode();
+  body.classList.add('sheet-open');
+}
+
+function closeTranslation() {
+  body.classList.remove('sheet-open');
+  document.querySelectorAll('.hotspot.active').forEach(el => el.classList.remove('active'));
+}
+
+function applyDetailMode() {
+  document.getElementById('jpBlock').classList.toggle('hidden', detailMode === 'pt');
+  document.getElementById('noteBlock').classList.toggle('hidden', detailMode !== 'notes');
+  document.querySelectorAll('.segmented button').forEach(b => b.classList.toggle('active', b.dataset.mode === detailMode));
+}
+
+function updateGuide() {
+  body.classList.toggle('guide-on', guide);
+  document.getElementById('guideBtn').textContent = guide ? 'Marcações ✓' : 'Marcações';
+}
+
+function updateShowAll() {
+  body.classList.toggle('show-all', showAll);
+  document.getElementById('showAllBtn').textContent = showAll ? 'Ocultar todas' : 'Mostrar todas';
+}
+
+function fitWidths() {
+  document.querySelectorAll('.page-wrap').forEach(wrap => {
+    const scroll = wrap.querySelector('.page-scroll');
+    const shell = wrap.querySelector('.page-shell');
+    const available = Math.max(280, scroll.clientWidth - 8);
+    const base = Math.min(920, available);
+    shell.style.width = Math.round(base * zoom) + 'px';
+  });
+  document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
+}
+
+
+// Permite rolar verticalmente a página normalmente mesmo quando o cursor
+// está sobre a imagem do mangá. O contêiner continua aceitando rolagem
+// horizontal para páginas ampliadas.
+function enableNaturalWheelScroll() {
+  document.querySelectorAll('.page-scroll').forEach(scroller => {
+    scroller.addEventListener('wheel', e => {
+      // Ctrl+roda continua reservado ao zoom do navegador.
+      // Shift+roda e gestos predominantemente horizontais continuam
+      // disponíveis para navegar lateralmente quando a página está ampliada.
+      if (e.ctrlKey || e.shiftKey) return;
+      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+
+      e.preventDefault();
+
+      let dy = e.deltaY;
+      if (e.deltaMode === 1) dy *= 16;
+      else if (e.deltaMode === 2) dy *= window.innerHeight;
+
+      const rootScroller = document.scrollingElement || document.documentElement;
+      rootScroller.scrollTop += dy;
+    }, { passive: false });
+  });
+}
+
+function goToPage(n) {
+  n = Math.max(1, Math.min(pages.length, n));
+  document.getElementById(`page-${n}`).scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('closeSheet').addEventListener('click', closeTranslation);
+document.getElementById('backdrop').addEventListener('click', closeTranslation);
+
+document.querySelectorAll('.segmented button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    detailMode = btn.dataset.mode;
+    localStorage.setItem('mangaDetailMode', detailMode);
+    applyDetailMode();
+  });
+});
+
+document.getElementById('guideBtn').addEventListener('click', () => {
+  guide = !guide;
+  localStorage.setItem('mangaGuide', guide ? 'on' : 'off');
+  updateGuide();
+});
+
+document.getElementById('showAllBtn').addEventListener('click', () => {
+  showAll = !showAll;
+  updateShowAll();
+  if (showAll) closeTranslation();
+});
+
+document.getElementById('zoomIn').addEventListener('click', () => {
+  zoom = Math.min(2, +(zoom + .15).toFixed(2));
+  localStorage.setItem('mangaZoom', zoom);
+  fitWidths();
+});
+document.getElementById('zoomOut').addEventListener('click', () => {
+  zoom = Math.max(.7, +(zoom - .15).toFixed(2));
+  localStorage.setItem('mangaZoom', zoom);
+  fitWidths();
+});
+document.getElementById('zoomReset').addEventListener('click', () => {
+  zoom = 1; localStorage.setItem('mangaZoom', zoom); fitWidths();
+});
+
+document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
+document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
+
+const savedTheme = localStorage.getItem('mangaTheme') || 'dark';
+root.dataset.theme = savedTheme;
+function updateThemeIcon() {
+  document.getElementById('themeBtn').textContent = root.dataset.theme === 'dark' ? '☾' : '☀';
+}
+document.getElementById('themeBtn').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('mangaTheme', root.dataset.theme);
+  updateThemeIcon();
+});
+document.getElementById('fullscreenBtn').addEventListener('click', async () => {
+  try {
+    if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  } catch(e) {}
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeTranslation();
+  if (e.key === '+' || e.key === '=') document.getElementById('zoomIn').click();
+  if (e.key === '-') document.getElementById('zoomOut').click();
+  if (e.key === '0') document.getElementById('zoomReset').click();
+  if (e.key.toLowerCase() === 'a') document.getElementById('showAllBtn').click();
+  if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
+  if (e.key === 'ArrowRight') goToPage(currentPage + 1);
+});
+
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+  if (visible) {
+    currentPage = Number(visible.target.dataset.page);
+    localStorage.setItem('atm_ch2_lastPage', currentPage);
+    document.getElementById('pageIndicator').textContent = `${currentPage}/${pages.length}`;
+  }
+}, {threshold:[.25,.5,.75]});
+window.addEventListener('resize', fitWidths);
+
+makeReader();
+enableNaturalWheelScroll();
+document.querySelectorAll('.page-wrap').forEach(el => observer.observe(el));
+updateThemeIcon();
+updateGuide();
+updateShowAll();
+applyDetailMode();
+fitWidths();
+</script>
+</body>
+</html>
