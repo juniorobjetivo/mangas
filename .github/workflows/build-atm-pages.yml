@@ -20,17 +20,19 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          URL='https://drive.usercontent.google.com/download?id=1NaPUtXmQOLDUcIP9uzpgym9drk15mkRv&export=download&confirm=t'
-          curl -L --fail --retry 3 --retry-delay 2 "$URL" -o /tmp/capitulo_01.pdf
-          test "$(stat -c%s /tmp/capitulo_01.pdf)" -gt 1000000
+          python3 -m pip install --quiet gdown
+          gdown --fuzzy 'https://drive.google.com/file/d/1NaPUtXmQOLDUcIP9uzpgym9drk15mkRv/view?usp=drivesdk' -O /tmp/capitulo_01.pdf
           file /tmp/capitulo_01.pdf
+          test "$(stat -c%s /tmp/capitulo_01.pdf)" -gt 5000000
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          pdfinfo /tmp/capitulo_01.pdf | tee /tmp/pdfinfo.txt
+          grep -q '^Pages:[[:space:]]*64$' /tmp/pdfinfo.txt
 
       - name: Render and optimize 64 pages
         shell: bash
         run: |
           set -euxo pipefail
-          sudo apt-get update
-          sudo apt-get install -y poppler-utils
           rm -rf atm-pages
           mkdir -p atm-pages /tmp/atm-render
           pdftoppm -jpeg -scale-to-x 1100 -scale-to-y -1 -jpegopt quality=76,progressive=y,optimize=y /tmp/capitulo_01.pdf /tmp/atm-render/page
