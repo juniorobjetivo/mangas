@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d14">
+<title>Capítulos — Como Ninar a Rainha da Lua</title>
+<style>
+
+:root{
+  --bg:#0b0d14;--bg2:#111521;--panel:rgba(21,25,37,.78);--panel2:#171c29;
+  --text:#f7f8ff;--muted:#a7afc2;--line:rgba(255,255,255,.10);
+  --accent:#c6b6ff;--accent2:#8ea1ff;--pink:#f2addf;--shadow:0 24px 80px rgba(0,0,0,.38);
+}
+:root[data-theme="light"]{
+  --bg:#f3f4fa;--bg2:#e9ecf6;--panel:rgba(255,255,255,.86);--panel2:#fff;
+  --text:#151824;--muted:#697083;--line:rgba(22,30,55,.10);
+  --accent:#6555c9;--accent2:#5069d8;--pink:#b44d93;--shadow:0 24px 65px rgba(40,50,90,.16);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% -8%,rgba(138,115,255,.22),transparent 34%),
+    radial-gradient(circle at 92% 4%,rgba(242,173,223,.15),transparent 28%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+}
+a{color:inherit}
+button,a{font:inherit}
+.glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(20px);box-shadow:var(--shadow)}
+.topbar{
+  position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 74%,transparent);backdrop-filter:blur(18px)
+}
+.topbar-inner{max-width:1120px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:10px}
+.wordmark{font-weight:850;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1}
+.icon-btn{
+  width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:var(--panel);
+  color:var(--text);display:grid;place-items:center;text-decoration:none;cursor:pointer;transition:.18s ease
+}
+.icon-btn:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 17px;
+  border-radius:14px;border:1px solid var(--line);text-decoration:none;font-weight:800;cursor:pointer;transition:.18s ease
+}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border-color:transparent;box-shadow:0 12px 32px rgba(93,86,205,.28)}
+.btn.ghost{background:var(--panel);color:var(--text)}
+.muted{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800}
+.footer{max-width:1120px;margin:20px auto 0;padding:24px 18px 34px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:700px){.topbar-inner{padding:10px 12px}.wordmark{font-size:14px}.hide-mobile{display:none}}
+
+main{max-width:1040px;margin:auto;padding:34px 18px 90px}
+.series-head{display:grid;grid-template-columns:140px 1fr;gap:22px;align-items:center;margin-bottom:34px}
+.mini-cover{width:140px;aspect-ratio:1/1;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#6b56d9,#ed9ed3);box-shadow:var(--shadow)}
+.mini-cover img{width:100%;height:100%;object-fit:cover;display:block}
+h1{font-size:clamp(30px,5vw,48px);letter-spacing:-.04em;margin:4px 0 7px}
+.subtitle{color:var(--muted);line-height:1.55}
+.progress-wrap{margin-top:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.progress{height:7px;width:min(300px,70vw);border-radius:999px;background:var(--line);overflow:hidden}
+.progress>span{display:block;height:100%;width:37.5%;background:linear-gradient(90deg,var(--accent2),var(--pink));border-radius:inherit}
+.section-title{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:850;margin:0 0 12px}
+.chapter-list{display:grid;gap:10px}
+.chapter-card{position:relative;display:grid;grid-template-columns:72px 1fr auto 34px;gap:15px;align-items:center;min-height:92px;padding:14px 16px;border:1px solid var(--line);background:var(--panel);border-radius:19px;transition:.2s ease;overflow:hidden}
+.chapter-card.ready:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 16px 40px rgba(0,0,0,.16)}
+.chapter-card.locked{opacity:.66}
+.open-area{position:absolute;inset:0;z-index:2;border:0;background:transparent;cursor:pointer;text-decoration:none}
+.num{width:60px;height:60px;border-radius:16px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,var(--panel2));border:1px solid var(--line);font-size:20px;font-weight:900}
+.jp-title{font-family:"Yu Gothic","Noto Sans JP",sans-serif;font-weight:850;margin-bottom:3px}
+.pt-title{color:var(--muted);font-size:14px}
+.status{font-size:11px;font-weight:850;border:1px solid var(--line);border-radius:999px;padding:6px 9px;color:var(--muted)}
+.status.ready{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.arrow{font-size:27px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;z-index:30;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#111522;color:#fff;border:1px solid rgba(255,255,255,.12);padding:12px 16px;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.36);transition:.2s ease;font-size:14px}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:650px){.series-head{grid-template-columns:90px 1fr;gap:15px}.mini-cover{width:90px;border-radius:17px}.chapter-card{grid-template-columns:58px 1fr 26px;padding:12px;gap:10px}.num{width:50px;height:50px}.status{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a class="icon-btn" href="tsuki.html" aria-label="Voltar à série">←</a>
+  <div class="wordmark">Capítulos</div><div class="spacer"></div>
+  <button class="icon-btn" id="themeBtn" aria-label="Alternar tema">☾</button>
+</div></header>
+<main>
+  <section class="series-head">
+    <a class="mini-cover" href="tsuki.html"><img src="capa.png" alt="Capa colorida de 月の女王の寝かしつけかた"></a>
+    <div>
+      <span class="pill">月の女王の寝かしつけかた</span>
+      <h1>Como Ninar a Rainha da Lua</h1>
+      <div class="subtitle">Escolha um capítulo. Os capítulos 4.1, 4.2 e 5.1 já estão disponíveis no leitor interativo.</div>
+      <div class="progress-wrap"><div class="progress"><span></span></div><span class="muted">3 de 8 disponíveis</span></div>
+    </div>
+  </section>
+  <div class="section-title">Lista de capítulos</div>
+  <section class="chapter-list">
+    <article class="chapter-card locked">
+      <button class="open-area unavailable" data-chapter="1" aria-label="Capítulo 1 ainda não disponível"></button>
+      <div class="num">1</div>
+      <div class="chapter-copy"><div class="jp-title">女王様は眠れない</div><div class="pt-title">A Rainha não consegue dormir</div></div>
+      <span class="status">Em breve</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card locked">
+      <button class="open-area unavailable" data-chapter="2.1" aria-label="Capítulo 2.1 ainda não disponível"></button>
+      <div class="num">2.1</div>
+      <div class="chapter-copy"><div class="jp-title">抱き枕のお仕事</div><div class="pt-title">O trabalho de travesseiro de abraço</div></div>
+      <span class="status">Em breve</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card locked">
+      <button class="open-area unavailable" data-chapter="2.2" aria-label="Capítulo 2.2 ainda não disponível"></button>
+      <div class="num">2.2</div>
+      <div class="chapter-copy"><div class="jp-title">抱き枕のお仕事</div><div class="pt-title">O trabalho de travesseiro de abraço</div></div>
+      <span class="status">Em breve</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card locked">
+      <button class="open-area unavailable" data-chapter="3.1" aria-label="Capítulo 3.1 ainda não disponível"></button>
+      <div class="num">3.1</div>
+      <div class="chapter-copy"><div class="jp-title">パジャマのすすめ</div><div class="pt-title">A recomendação do pijama</div></div>
+      <span class="status">Em breve</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card locked">
+      <button class="open-area unavailable" data-chapter="3.2" aria-label="Capítulo 3.2 ainda não disponível"></button>
+      <div class="num">3.2</div>
+      <div class="chapter-copy"><div class="jp-title">パジャマのすすめ</div><div class="pt-title">A recomendação do pijama</div></div>
+      <span class="status">Em breve</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card ready">
+      <a class="open-area" id="chapter41" href="capitulo-4-1.html" aria-label="Abrir capítulo 4.1"></a>
+      <div class="num">4.1</div>
+      <div class="chapter-copy"><div class="jp-title">ベッドを探して</div><div class="pt-title">Procurando uma cama</div></div>
+      <span class="status ready">Disponível</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card ready">
+      <a class="open-area" id="chapter42" href="capitulo-4-2.html" aria-label="Abrir capítulo 4.2"></a>
+      <div class="num">4.2</div>
+      <div class="chapter-copy"><div class="jp-title">ベッドを探して</div><div class="pt-title">Procurando uma cama</div></div>
+      <span class="status ready">Concluído</span><div class="arrow">›</div>
+    </article>
+
+    <article class="chapter-card ready">
+      <a class="open-area" id="chapter51" href="capitulo-5-1.html" aria-label="Abrir capítulo 5.1"></a>
+      <div class="num">5.1</div>
+      <div class="chapter-copy"><div class="jp-title">諸星あきら</div><div class="pt-title">Akira Moroboshi</div></div>
+      <span class="status ready">Concluído</span><div class="arrow">›</div>
+    </article></section>
+</main>
+<div class="toast" id="toast">Este capítulo ainda não foi adicionado ao leitor.</div>
+<footer class="footer">Os capítulos marcados como “Em breve” já estão preparados na biblioteca para receber as próximas páginas.</footer>
+<script>
+const root=document.documentElement;root.dataset.theme=localStorage.getItem('tsukiTheme')||'dark';
+const tb=document.getElementById('themeBtn');function syncTheme(){tb.textContent=root.dataset.theme==='dark'?'☾':'☀';}
+tb.onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('tsukiTheme',root.dataset.theme);syncTheme();};syncTheme();
+const last41=Number(localStorage.getItem('tsuki_ch41_lastPage')||1), a41=document.getElementById('chapter41');
+if(last41>1) a41.href='capitulo-4-1.html#page-'+last41;
+const last42=Number(localStorage.getItem('tsuki_ch42_lastPage')||1), a42=document.getElementById('chapter42');
+if(last42>1) a42.href='capitulo-4-2.html#page-'+last42;
+const last51=Number(localStorage.getItem('tsuki_ch51_lastPage')||1), a51=document.getElementById('chapter51');
+if(last51>1) a51.href='capitulo-5-1.html#page-'+last51;
+let timer;document.querySelectorAll('.unavailable').forEach(b=>b.addEventListener('click',()=>{const t=document.getElementById('toast');t.textContent='Capítulo '+b.dataset.chapter+' ainda não foi adicionado ao leitor.';t.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>t.classList.remove('show'),2200);}));
+</script>
+</body></html>
