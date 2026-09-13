@@ -21,7 +21,7 @@ jobs:
         run: |
           set -euxo pipefail
           python3 -m pip install --quiet gdown
-          gdown --fuzzy 'https://drive.google.com/file/d/1NaPUtXmQOLDUcIP9uzpgym9drk15mkRv/view?usp=drivesdk' -O /tmp/capitulo_01.pdf
+          gdown '1NaPUtXmQOLDUcIP9uzpgym9drk15mkRv' -O /tmp/capitulo_01.pdf
           file /tmp/capitulo_01.pdf
           test "$(stat -c%s /tmp/capitulo_01.pdf)" -gt 5000000
           sudo apt-get update
